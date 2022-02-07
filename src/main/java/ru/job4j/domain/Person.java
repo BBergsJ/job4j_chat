@@ -56,11 +56,12 @@ public class Person {
             return false;
         }
         Person person = (Person) o;
-        return id == person.id;
+        return Objects.equals(name, person.name)
+                && Objects.equals(password, person.password);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(name, password);
     }
 }

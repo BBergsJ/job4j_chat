@@ -42,4 +42,8 @@ public class PersonService {
         }
         return rsl;
     }
+
+    public Person findByUsername(String username) {
+        return personRepository.findByName(username);
+    }
 }
