@@ -3,6 +3,7 @@ package ru.job4j.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import ru.job4j.domain.Message;
 import ru.job4j.service.MessageService;
 
@@ -27,14 +28,17 @@ public class MessageController {
     @GetMapping("/{id}")
     public ResponseEntity<Message> findById(@PathVariable int id) {
         Optional<Message> message = messageService.findById(id);
-        return new ResponseEntity<Message>(
-                message.orElse(new Message()),
-                message.isPresent() ? HttpStatus.OK : HttpStatus.NOT_FOUND
-        );
+        if (message.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Message not found");
+        }
+        return new ResponseEntity<Message>(message.get(), HttpStatus.OK);
     }
 
     @PostMapping("/")
     public ResponseEntity<Message> create(@RequestBody Message message) {
+        if (message.getText() == null || message.getAuthor() == null) {
+            throw new NullPointerException("Autor of the message or text is empty");
+        }
         return new ResponseEntity<Message>(
                 messageService.create(message),
                 HttpStatus.CREATED
@@ -43,6 +47,9 @@ public class MessageController {
 
     @PutMapping("/")
     public ResponseEntity<Void> update(@RequestBody Message message) {
+        if (message.getText() == null || message.getAuthor() == null) {
+            throw new NullPointerException("Autor of the message or text is empty");
+        }
         messageService.create(message);
         return ResponseEntity.ok().build();
     }
