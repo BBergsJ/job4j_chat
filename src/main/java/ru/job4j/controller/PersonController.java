@@ -46,15 +46,14 @@ public class PersonController {
         if (id == 0) {
             throw new IllegalArgumentException("Id mustn't be 0");
         }
-        Optional<Person> person = personService.findById(id);
-        if (person.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Person not found");
-        }
-        return new ResponseEntity<Person>(person.get(), HttpStatus.OK);
+        return ResponseEntity.of(Optional.of(
+                personService.findById(id).orElseThrow(
+                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Person not found"))
+        ));
     }
 
     @PostMapping("/")
-    public ResponseEntity<Person> create(@RequestBody Map<String, String> body) {
+    public ResponseEntity<?> create(@RequestBody Map<String, String> body) {
         var name = body.get("name");
         var password = body.get("password");
         if (name == null || password == null) {
@@ -66,10 +65,11 @@ public class PersonController {
         var person = new Person();
         person.setName(name);
         person.setPassword(encoder.encode(person.getPassword()));
-        return new ResponseEntity<Person>(
-                personService.save(person),
+        var entity = new ResponseEntity(
+                person,
                 HttpStatus.CREATED
         );
+        return entity;
     }
 
     @PutMapping("/")
