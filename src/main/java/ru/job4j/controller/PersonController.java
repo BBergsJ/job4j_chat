@@ -98,6 +98,20 @@ public class PersonController {
         );
     }
 
+    @PatchMapping("/")
+    public void edit(@RequestBody Person dto) {
+        Optional<Person> person = personService.findById(dto.getId());
+        if (person.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Person not found");
+        }
+        personService.save(Person.of(
+                dto.getId(),
+                dto.getName(),
+                dto.getPassword(),
+                dto.getRole()
+                ));
+    }
+
     @ExceptionHandler(value = { IllegalArgumentException.class })
     public void exceptionHandler(Exception e,
                                  HttpServletRequest request,

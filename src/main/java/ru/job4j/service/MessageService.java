@@ -40,4 +40,8 @@ public class MessageService {
         }
         return rsl;
     }
+
+    public Message save(Message message) {
+        return messageRepository.save(message);
+    }
 }

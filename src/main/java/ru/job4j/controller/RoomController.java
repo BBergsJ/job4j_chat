@@ -62,4 +62,13 @@ public class RoomController {
                 roomService.delete(id) ? HttpStatus.OK : HttpStatus.NOT_FOUND
         );
     }
+
+    @PatchMapping("/")
+    public void edit(@RequestBody Room dto) {
+        Optional<Room> room = roomService.findById(dto.getId());
+        if (room.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Roo not found");
+        }
+        roomService.save(Room.of(dto.getId()));
+    }
 }

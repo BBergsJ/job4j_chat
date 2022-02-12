@@ -10,6 +10,12 @@ public class Room {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    public static Room of(int id) {
+        Room room = new Room();
+        room.id = id;
+        return room;
+    }
+
     public int getId() {
         return id;
     }

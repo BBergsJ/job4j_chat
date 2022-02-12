@@ -15,6 +15,15 @@ public class Person {
     @JoinColumn(name = "role_id")
     private Role role;
 
+    public static Person of(int id, String name, String password, Role role) {
+        Person person = new Person();
+        person.id = id;
+        person.name = name;
+        person.password = password;
+        person.role = role;
+        return person;
+    }
+
     public int getId() {
         return id;
     }

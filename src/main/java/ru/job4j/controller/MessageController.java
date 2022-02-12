@@ -62,4 +62,18 @@ public class MessageController {
                 messageService.delete(id) ? HttpStatus.OK : HttpStatus.NOT_FOUND
         );
     }
+
+    @PatchMapping("/")
+    public void edit(@RequestBody Message dto) {
+        Optional<Message> message = messageService.findById(dto.getId());
+        if (message.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Message not foud");
+        }
+        messageService.save(Message.of(
+                dto.getId(),
+                dto.getText(),
+                dto.getRoom(),
+                dto.getAuthor()
+        ));
+    }
 }

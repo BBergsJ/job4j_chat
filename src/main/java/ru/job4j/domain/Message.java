@@ -18,6 +18,15 @@ public class Message {
     @JoinColumn(name = "person_id")
     private Person author;
 
+    public static Message of(int id, String text, Room room, Person author) {
+        Message message = new Message();
+        message.id = id;
+        message.text = text;
+        message.room = room;
+        message.author = author;
+        return message;
+    }
+
     private LocalDateTime created;
 
     public Person getAuthor() {
