@@ -2,11 +2,14 @@ package ru.job4j.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import ru.job4j.domain.Message;
+import ru.job4j.handlers.Operation;
 import ru.job4j.service.MessageService;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,7 +38,8 @@ public class MessageController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<Message> create(@RequestBody Message message) {
+    @Validated(Operation.OnCreate.class)
+    public ResponseEntity<Message> create(@Valid @RequestBody Message message) {
         if (message.getText() == null || message.getAuthor() == null) {
             throw new NullPointerException("Autor of the message or text is empty");
         }
@@ -46,7 +50,7 @@ public class MessageController {
     }
 
     @PutMapping("/")
-    public ResponseEntity<Void> update(@RequestBody Message message) {
+    public ResponseEntity<Void> update(@Valid @RequestBody Message message) {
         if (message.getText() == null || message.getAuthor() == null) {
             throw new NullPointerException("Autor of the message or text is empty");
         }
@@ -64,7 +68,7 @@ public class MessageController {
     }
 
     @PatchMapping("/")
-    public void edit(@RequestBody Message dto) {
+    public void edit(@Valid @RequestBody Message dto) {
         Optional<Message> message = messageService.findById(dto.getId());
         if (message.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Message not foud");
